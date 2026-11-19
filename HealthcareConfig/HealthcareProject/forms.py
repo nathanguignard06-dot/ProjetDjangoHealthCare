@@ -4,7 +4,7 @@ from .models import Objet, Capteur, Actionneur, Mesure, Patient
 class ObjetForm(forms.ModelForm):
     class Meta:
         model = Objet
-        fields = ['nom', 'emplacement', 'description', 'actif']
+        fields = ['patient', 'nom', 'emplacement', 'description', 'actif']
 
 
 class CapteurForm(forms.ModelForm):
@@ -27,4 +27,4 @@ class MesureForm(forms.ModelForm):
 class PatientForm(forms.ModelForm):
     class Meta:
         model = Patient
-        fields = ['objet', 'nomPatient', 'agePatient', 'numTelephone', 'descriptionPatient']
+        fields = ['nomPatient', 'agePatient', 'numTelephone', 'descriptionPatient']

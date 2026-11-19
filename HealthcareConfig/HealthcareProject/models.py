@@ -10,7 +10,7 @@ class Patient(models.Model):
     descriptionPatient = models.TextField(blank=True)
 
 class Objet(models.Model):
-    patient = models.ForeignKey(Patient, on_delete=models.PROTECT, related_name='patient')
+    patient = models.ForeignKey(Patient, on_delete=models.PROTECT, related_name='objets')
     nom = models.CharField(max_length=80, unique=True)
     emplacement = models.CharField(max_length=120)
     description = models.TextField(blank=True)

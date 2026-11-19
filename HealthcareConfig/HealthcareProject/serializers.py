@@ -50,7 +50,7 @@ class CommandeSerializer(serializers.ModelSerializer):
         fields = ['id', 'actionneur', 'utilisateur', 'etat_demande', 'date']
         read_only_fields = fields
 
-class PatientSerializer(serializers.ModelSerializer):
+class PatientSerializer(SerializerValide):
     class Meta:
         model = Patient
         fields = ['id', 'nomPatient', 'agePatient', 'numTelephone', 'descriptionPatient']

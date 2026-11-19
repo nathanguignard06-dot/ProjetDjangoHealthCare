@@ -49,7 +49,10 @@ def tableau(request):
 def liste(request, type_element):
     model, form, titre = configuration(type_element)
     q = request.GET.get('q', '').strip()
-    elements = model.objects.filter(nom__icontains=q)
+    if type_element == 'patients':
+        elements = model.objects.filter(nomPatient__icontains=q)
+    else:
+        elements = model.objects.filter(nom__icontains=q)
     page = Paginator(elements, 10).get_page(request.GET.get('page'))
     return render(request, 'HealthCare/liste.html', {
         'page': page, 'titre': titre, 'type_element': type_element, 'q': q,
@@ -131,6 +134,6 @@ def commande(request, pk):
 @login_required
 def journal(request):
     commandes = Commande.objects.select_related('actionneur', 'utilisateur')
-    return render(request, 'inventaire/journal.html', {
+    return render(request, 'HealthCare/journal.html', {
         'page': Paginator(commandes, 20).get_page(request.GET.get('page')),
     })
