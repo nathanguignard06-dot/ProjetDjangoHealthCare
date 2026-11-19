@@ -49,10 +49,7 @@ def tableau(request):
 def liste(request, type_element):
     model, form, titre = configuration(type_element)
     q = request.GET.get('q', '').strip()
-    if type_element == 'patients':
-        elements = model.objects.filter(nomPatient__icontains=q)
-    else:
-        elements = model.objects.filter(nom__icontains=q)
+    elements = model.objects.filter(nom__icontains=q)
     page = Paginator(elements, 10).get_page(request.GET.get('page'))
     return render(request, 'HealthcareProject/liste.html', {
         'page': page, 'titre': titre, 'type_element': type_element, 'q': q,

@@ -4,10 +4,16 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
 class Patient(models.Model):
-    nomPatient = models.CharField(max_length=100, unique=False)
+    nom = models.CharField(max_length=100, unique=False)
     agePatient = models.IntegerField()
     numTelephone = models.CharField(max_length=20)
     descriptionPatient = models.TextField(blank=True)
+
+    class Meta:
+            ordering = ['nom']
+
+    def __str__(self):
+            return self.nom
 
 class Objet(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.PROTECT, related_name='objets')

@@ -22,7 +22,7 @@ class ApplicationTests(TestCase):
         )
 
         self.patient = Patient.objects.create(
-            nomPatient='Patient Test',
+            nom='Patient Test',
             agePatient=25,
             numTelephone='5061234567',
             descriptionPatient='Patient pour les tests'
@@ -136,7 +136,7 @@ class ApplicationTests(TestCase):
         response = self.client.post(
             reverse('ajouter', args=['patients']),
             {
-                'nomPatient': 'Nouveau Patient',
+                'nom': 'Nouveau Patient',
                 'agePatient': 35,
                 'numTelephone': '5069876543',
                 'descriptionPatient': 'Patient de test',
@@ -146,13 +146,13 @@ class ApplicationTests(TestCase):
         self.assertEqual(response.status_code, 302)
 
         patient = Patient.objects.get(
-            nomPatient='Nouveau Patient'
+            nom='Nouveau Patient'
         )
 
         self.client.post(
             reverse('modifier', args=['patients', patient.pk]),
             {
-                'nomPatient': 'Patient Modifie',
+                'nom': 'Patient Modifie',
                 'agePatient': 36,
                 'numTelephone': '5069876543',
                 'descriptionPatient': 'Description modifiee',
@@ -365,7 +365,7 @@ class ApplicationTests(TestCase):
 
         self.assertContains(
             response,
-            self.patient.nomPatient
+            self.patient.nom
         )
 
         self.assertEqual(

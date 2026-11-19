@@ -27,4 +27,4 @@ class MesureForm(forms.ModelForm):
 class PatientForm(forms.ModelForm):
     class Meta:
         model = Patient
-        fields = ['nomPatient', 'agePatient', 'numTelephone', 'descriptionPatient']
+        fields = ['nom', 'agePatient', 'numTelephone', 'descriptionPatient']

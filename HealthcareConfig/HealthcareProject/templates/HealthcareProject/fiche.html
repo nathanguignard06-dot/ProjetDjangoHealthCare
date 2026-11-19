@@ -3,7 +3,7 @@
 <h2>{{ element.nom }}</h2>
 <p>Identifiant : {{ element.pk }}</p>
 {% if type_element == 'patients' %}
-    <p>Nom : {{ element.nomPatient }}</p>
+    <p>Nom : {{ element.nom }}</p>
     <p>Age : {{ element.agePatient }}</p>
     <p>Numereau de téléphone : {{ element.numTelephone }}</p>
     <p>{{ element.descriptionPatient|linebreaksbr }}</p>

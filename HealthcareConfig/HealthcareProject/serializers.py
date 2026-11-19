@@ -53,4 +53,4 @@ class CommandeSerializer(serializers.ModelSerializer):
 class PatientSerializer(SerializerValide):
     class Meta:
         model = Patient
-        fields = ['id', 'nomPatient', 'agePatient', 'numTelephone', 'descriptionPatient']
+        fields = ['id', 'nom', 'agePatient', 'numTelephone', 'descriptionPatient']

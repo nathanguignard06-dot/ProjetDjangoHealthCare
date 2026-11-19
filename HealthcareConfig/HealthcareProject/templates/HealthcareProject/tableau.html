@@ -9,7 +9,7 @@
         <tbody>
             {% for ligne in lignes %}
             <tr>
-                <td>{{ ligne.capteur.objet.patient.nomPatient }}</td>
+                <td>{{ ligne.capteur.objet.patient.nom }}</td>
                 <td>{{ ligne.capteur.objet }}{% if not ligne.capteur.objet.actif %} (désactivé){% endif %}</td>
                 <td><a href="{% url 'fiche' 'capteurs' ligne.capteur.pk %}">{{ ligne.capteur.nom }}</a></td>
                 <td>{% if ligne.mesure %}{{ ligne.mesure.valeur }} {{ ligne.capteur.unite }}{% else %}Aucune mesure{% endif %}</td>
