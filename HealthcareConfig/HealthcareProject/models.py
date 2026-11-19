@@ -3,7 +3,14 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
+class Patient(models.Model):
+    nomPatient = models.CharField(max_length=100, unique=False)
+    agePatient = models.IntegerField()
+    numTelephone = models.CharField(max_length=20)
+    descriptionPatient = models.TextField(blank=True)
+
 class Objet(models.Model):
+    patient = models.ForeignKey(Patient, on_delete=models.PROTECT, related_name='patient')
     nom = models.CharField(max_length=80, unique=True)
     emplacement = models.CharField(max_length=120)
     description = models.TextField(blank=True)
@@ -45,14 +52,6 @@ class Capteur(models.Model):
 
     def __str__(self):
         return f'{self.nom} ({self.unite})'
-    
-
-class Patient(models.Model):
-    objet = models.ForeignKey(Objet, on_delete=models.PROTECT, related_name='patient')
-    nomPatient = models.CharField(max_length=100, unique=False)
-    agePatient = models.IntegerField()
-    numTelephone = models.IntegerField(max_length=10)
-    descriptionPatient = models.TextField(blank=True)
 
 class Actionneur(models.Model):
     objet = models.ForeignKey(Objet, on_delete=models.PROTECT, related_name='actionneurs')
