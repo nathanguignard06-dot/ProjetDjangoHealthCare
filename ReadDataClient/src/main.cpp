@@ -1,55 +1,120 @@
-
 #include <Arduino.h>
 #include <WiFi.h>
+#include <HTTPClient.h>
+#include <ArduinoJson.h>
 #include "secrets.h"
 
+/*--- WIFI CREDENTIALS ---*/
 const char* ssid = SSID;
-const char* password = PASS;
+const char* pass = PASS;
 
-const char* serverIP = "192.168.20.131";
-const uint16_t serverPort = 8000;
+/*--- DJANGO API ---*/
+const char* apiUrl = API_ENDPOINT;
+const char* token = DJANGO_TOKEN;
 
 WiFiClient client;
 
-void setup() {
-    Serial.begin(9600);
+void setup()
+{
+    Serial.begin(115200);
 
-    WiFi.mode(WIFI_STA);
-    WiFi.begin(ssid, password);
+    WiFi.begin(ssid, pass);
 
-    while (WiFi.status() != WL_CONNECTED) {
+    int timeout = 0;
+
+    while (WiFi.status() != WL_CONNECTED)
+    {
         delay(500);
         Serial.print(".");
+
+        timeout++;
+
+        if (timeout > 20)
+        {
+            Serial.println("\n[ERROR] WiFi timeout!");
+            ESP.restart();
+        }
     }
 
-    Serial.print("ESP32 IP: ");
+    Serial.println("\n[TCP] Testing Django connection...");
+
+    WiFiClient testClient;
+
+    if (testClient.connect("192.168.20.131", 8000))
+    {
+        Serial.println("[TCP] CONNECTION SUCCESSFUL!");
+        testClient.stop();
+    }
+    else
+    {
+        Serial.println("[TCP] CONNECTION FAILED!");
+    }
+
+    Serial.println("\n[WIFI] Connected!");
     Serial.println(WiFi.localIP());
-
-    Serial.print("Subnet Mask: ");
-    Serial.println(WiFi.subnetMask());
-
-    Serial.print("Gateway: ");
-    Serial.println(WiFi.gatewayIP());
-
-    Serial.println("\nWiFi Connected!");
-
-    Serial.print("ESP32 IP: ");
-    Serial.println(WiFi.localIP());
-
-    Serial.print("Gateway: ");
-    Serial.println(WiFi.gatewayIP());
 }
 
-void loop() {
-    Serial.println("\nTesting TCP connection...");
+void loop()
+{
+    if (WiFi.status() == WL_CONNECTED)
+    {
+        HTTPClient http;
 
-    if (client.connect(serverIP, serverPort)) {
-        Serial.println("TCP CONNECTION SUCCESSFUL!");
-        client.stop();
+        Serial.println("[HTTP] Connecting to Django...");
+
+        if (http.begin(client, apiUrl))
+        {
+            // Authentication
+            http.addHeader("Content-Type", "application/json");
+            http.addHeader("Authorization", String("Token ") + token);
+
+            // Simulated sensor data
+            float temperature = 26.57;
+
+            // JSON creation
+            JsonDocument doc;
+
+            doc["capteur"] = 2;
+            doc["valeur"] = temperature;
+
+            String jsonPayload;
+            serializeJson(doc, jsonPayload);
+
+            Serial.println("[JSON] Sending:");
+            Serial.println(jsonPayload);
+
+            // Send POST request
+            int httpCode = http.POST(jsonPayload);
+
+            Serial.printf("[HTTP] Response code: %d\n", httpCode);
+
+            if (httpCode > 0)
+            {
+                String response = http.getString();
+
+                Serial.println("[SERVER] Response:");
+                Serial.println(response);
+            }
+            else
+            {
+                Serial.printf(
+                    "[HTTP] Connection failed: %s\n",
+                    http.errorToString(httpCode).c_str()
+                );
+            }
+
+            http.end();
+        }
+        else
+        {
+            Serial.println("[HTTP] Unable to initialize connection!");
+        }
     }
-    else {
-        Serial.println("TCP CONNECTION FAILED!");
+    else
+    {
+        Serial.println("[WIFI] Disconnected!");
+        WiFi.reconnect();
     }
 
-    delay(5000);
+    delay(60000);
 }
