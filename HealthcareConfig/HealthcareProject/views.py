@@ -37,7 +37,7 @@ def tableau(request):
             'capteur': capteur, 'mesure': derniere,
             'alerte': derniere is not None and derniere.valeur > capteur.seuil_alerte,
         })
-    return render(request, 'HealthCare/tableau.html', {
+    return render(request, 'HealthcareProject/tableau.html', {
         'nb_patients': Patient.objects.count(),
         'nb_objets': Objet.objects.count(),
         'nb_capteurs': Capteur.objects.count(),
@@ -54,7 +54,7 @@ def liste(request, type_element):
     else:
         elements = model.objects.filter(nom__icontains=q)
     page = Paginator(elements, 10).get_page(request.GET.get('page'))
-    return render(request, 'HealthCare/liste.html', {
+    return render(request, 'HealthcareProject/liste.html', {
         'page': page, 'titre': titre, 'type_element': type_element, 'q': q,
     })
 
@@ -62,7 +62,7 @@ def liste(request, type_element):
 def fiche(request, type_element, pk):
     model, form, titre = configuration(type_element)
     element = get_object_or_404(model, pk=pk)
-    return render(request, 'HealthCare/fiche.html', {
+    return render(request, 'HealthcareProject/fiche.html', {
         'element': element, 'type_element': type_element,
     })
 
@@ -75,9 +75,9 @@ def editer(request, type_element, pk=None):
         element = form.save()
         messages.success(request, 'Enregistrement réussi.')
         return redirect('fiche', type_element=type_element, pk=element.pk)
-    return render(request, 'HealthCare/formulaire.html', {
+    return render(request, 'HealthcareProject/formulaire.html', {
         'form': form, 'titre': ('Modifier : ' if element else 'Ajouter : ') + titre,
-        'retour': '/HealthCare/' + type_element + '/',
+        'retour': '/HealthcareProject/' + type_element + '/',
     })
 
 @login_required
@@ -92,7 +92,7 @@ def supprimer(request, type_element, pk):
         else:
             messages.success(request, 'Fiche supprimée.')
             return redirect('liste', type_element=type_element)
-    return render(request, 'HealthCare/supprimer.html', {
+    return render(request, 'HealthcareProject/supprimer.html', {
         'element': element, 'type_element': type_element,
     })
 
@@ -110,7 +110,7 @@ def mesures(request):
         if capteur is None:
             raise Http404('Capteur invalide')
         mesures_qs = mesures_qs.filter(capteur=capteur)
-    return render(request, 'HealthCare/mesures.html', {
+    return render(request, 'HealthcareProject/mesures.html', {
         'form': form, 'page': Paginator(mesures_qs, 20).get_page(request.GET.get('page')),
         'capteurs': Capteur.objects.all(), 'filtre': capteur_id,
     })
@@ -134,6 +134,6 @@ def commande(request, pk):
 @login_required
 def journal(request):
     commandes = Commande.objects.select_related('actionneur', 'utilisateur')
-    return render(request, 'HealthCare/journal.html', {
+    return render(request, 'HealthcareProject/journal.html', {
         'page': Paginator(commandes, 20).get_page(request.GET.get('page')),
     })
