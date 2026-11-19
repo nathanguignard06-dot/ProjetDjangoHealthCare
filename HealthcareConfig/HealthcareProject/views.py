@@ -20,7 +20,7 @@ CATALOGUE = {
     'objets': (Objet, ObjetForm, 'Objets intelligents'),
     'capteurs': (Capteur, CapteurForm, 'Capteurs'),
     'actionneurs': (Actionneur, ActionneurForm, 'Actionneurs'),
-    'patient': (Patient, PatientForm, 'Patient'),
+    'patients': (Patient, PatientForm, 'Patients'),
 }
 
 def configuration(type_element):
@@ -38,8 +38,11 @@ def tableau(request):
             'alerte': derniere is not None and derniere.valeur > capteur.seuil_alerte,
         })
     return render(request, 'HealthCare/tableau.html', {
-        'nb_objets': Objet.objects.count(), 'nb_capteurs': Capteur.objects.count(),
-        'nb_actionneurs': Actionneur.objects.count(), 'lignes': lignes,
+        'nb_patients': Patient.objects.count(),
+        'nb_objets': Objet.objects.count(),
+        'nb_capteurs': Capteur.objects.count(),
+        'nb_actionneurs': Actionneur.objects.count(),
+        'lignes': lignes,
     })
 
 @login_required
